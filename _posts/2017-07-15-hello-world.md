@@ -1,10 +1,12 @@
 ---
 layout: post
 title:  "Hello World!"
-date:   2017-07-15 22:00:00 +0800
+date:   2017-07-15 
+permalink: /blog/hello_world
 categories: jekyll update
 ---
-[helmholtz.io](http://helmholtz.io) is a blog devoted to machine learning, generative methods, and theories of the
-Bayesian Brain.
+This blog is about neurally-inspired methods of machine learning. We focus on the framework of free energy minimization
+(thus Helmholtz) and approximate + exact inference.
 
 New posts coming soon!
+
