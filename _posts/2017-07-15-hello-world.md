@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Hello World!"
-date:   2017-07-15 
+date:   2017-07-15 22:00:00 +0800
 permalink: /blog/hello_world
 categories: jekyll update
 ---
