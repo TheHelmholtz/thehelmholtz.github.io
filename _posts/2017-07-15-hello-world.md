@@ -9,4 +9,3 @@ categories: jekyll update
 This blog is about neurally-inspired methods of machine learning. We focus on the framework of free energy minimization
 (thus Helmholtz) and approximate + exact inference. New posts coming soon!
 
-{% include disqus.html %}

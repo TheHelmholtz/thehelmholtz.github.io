@@ -3,6 +3,7 @@ layout: post
 title:  "Symmetric VAE derives GAN"
 date:   2017-07-15 23:00:00 +0800
 permalink: /blog/symmetric_vae
+comments: true
 categories: jekyll update
 ---
 
@@ -273,3 +274,4 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 \end{align*}</script></p>
 
 <p>Which is the generator gradient. The conclusion is that Generative Adversarial Network is an extremely stripped-down version of the Symmetric VAE, with an additional discriminator that approximates <script type="math/tex" id="MathJax-Element-1009">Q(x)</script>.</p>
+
