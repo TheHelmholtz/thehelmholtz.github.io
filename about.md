@@ -4,18 +4,31 @@ title: About
 permalink: /about/
 ---
 
-We are proponents of the Bayesian Brain. Using the framework of free energy minimization and approximate + exact
-inference, we develop neurally-inspired methods of perception, attention, memory, action and planning.
+I am HOU Yunqing:
+{% include icon-github.html username="hyqneuron" %} {% include icon-linkedin.html pagename="hou-yunqing" %}. 
 
+I write about neurally-inspired methods of machine learning in this blog. I've been a believer of the connectionist
+approach for about half of my life. And I am still passionate about the statistical principles underlying attention and
+memory. 
 
-## Active Projects
+> Disclaimer: I am inexperienced in research and I am still learning. I very much appreciate people who point out my
+> mistakes.
 
-These are the projects we are currently working on:
+## Research direction
 
-- Variational Autoencoder with multimodal likelihood and posterior
-- Variational Autoencoder with symmetric cost (Extended Helmholtz Machine)
-- MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
-- Variance reduction for large categorical variables
+* Approximate + Exact Inference
+* Discrete Entity Modelling
+* Attention and Memory
+* Binding
+
+See [Research Direction](/direction) for details.
+
+## Active projects
+
+* Variational Autoencoder with multimodal likelihood and posterior
+* Symmetric Variational Autoencoder (Extended Helmholtz Machine)
+* MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
+* Variance reduction for large categorical variables
 
 ## Contact
 
