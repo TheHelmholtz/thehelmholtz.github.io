@@ -23,9 +23,11 @@
     margin-bottom: 0;
     text-align: center;
 
-    &,
     &:visited {
         color: $grey-color-dark;
+    }
+    &:hover{
+    text-decoration: none;
     }
 }
 
@@ -36,6 +38,9 @@
     // Gaps between nav items, but not on the last one
     &:not(:last-child) {
         margin-right: 20px;
+    }
+    &:visited {
+        color: $text-color;
     }
 }
 
