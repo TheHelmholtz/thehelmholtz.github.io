@@ -7,18 +7,16 @@ permalink: /about/
 I am HOU Yunqing:
 {% include icon-github.html username="hyqneuron" %} {% include icon-linkedin.html pagename="hou-yunqing" %}. 
 
-I write about neurally-inspired methods of machine learning in this blog. I've been a believer of the connectionist
-approach for about half of my life. And I am still passionate about the statistical principles underlying attention and
-memory. 
+I write about neurally-inspired methods of machine learning in this blog. I've been a connectionist for half of my life.
+I'm still passionate about how the brain works, and its underlying statistical principles. 
 
-> Disclaimer: I am inexperienced in research and I am still learning. I very much appreciate people who point out my
-> mistakes.
+I am inexperienced and still learning. I very much appreciate people who point out my mistakes.
 
 ## Research direction
 
-* Approximate + Exact Inference
-* Discrete Entity Modelling
-* Attention and Memory
+* Approximate + exact inference
+* Discrete entity modelling
+* Attention and memory
 * Binding
 
 See [Research Direction](/direction) for details.
@@ -27,8 +25,8 @@ See [Research Direction](/direction) for details.
 
 * Variational Autoencoder with multimodal likelihood and posterior
 * Symmetric Variational Autoencoder (Extended Helmholtz Machine)
-* MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
 * Variance reduction for large categorical variables
+* MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
 
 ## Contact
 
