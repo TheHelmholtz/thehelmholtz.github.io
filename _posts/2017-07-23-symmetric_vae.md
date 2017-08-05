@@ -11,10 +11,6 @@ categories: jekyll update
 
 
 
-
-
-
-
 <h2 id="abstract">Abstract</h2>
 
 <p>Variational Autoencoders optimize an asymmetric cost, which is undesirable. We extend VAEs to a symmetric cost, which is the sum of two Minimum Description Length (MDL) objectives. This MDL objective has two problems. First, it cannot be directly computed. In approximating it we obtain the discriminator found in Generative Adversarial Networks. Second, it involves two pairs of opposing costs, which makes optimization difficult. We break the opponency by minimizing an upper bound on the MDL objective, obtaining the Extended Helmholtz Machine (EHM). We demonstrate early results of an EHM trained on LSUN bedroom images.</p>
@@ -82,11 +78,11 @@ where <script type="math/tex" id="MathJax-Element-3680">Z=\sum_x Q''(x)</script>
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-3614">
-E_{v \sim Q(x)}log\frac{1}{Q''(x)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
+<p><script type="math/tex; mode=display" id="MathJax-Element-3685">
+E_{x \sim Q(x)}log\frac{1}{Q''(x)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 </script></p>
 
-<p>which is the discriminator loss in Generative Adversarial Networks. So <script type="math/tex" id="MathJax-Element-3615">Q''(x)</script> is the discriminator. Please refer to Appendix A for details of derivation.</p>
+<p>which is the discriminator loss in Generative Adversarial Networks. So <script type="math/tex" id="MathJax-Element-3686">Q''(x)</script> is the discriminator. Please refer to Appendix A for details of derivation.</p>
 
 <h2 id="extended-helmholtz-machine">Extended Helmholtz Machine</h2>
 
