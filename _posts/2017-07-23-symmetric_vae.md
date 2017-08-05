@@ -4,26 +4,25 @@ title:  "Symmetric variational loss and GAN"
 date:   2017-08-05 10:00:00 +0800
 permalink: /blog/symmetric_vae
 comments: true
+excerpt: We discuss the asymmetry of Variational Autoencoders, and why it might be better to use a symmetric cost instead. We show several symmetric variational costs, and demonstrate how GANs can be derived from them. We have succeeded in training with one of such costs, and demonstrate some sample images.
 categories: jekyll update
 ---
 
 
-We discuss the asymmetry of Variational Autoencoders, and why it might be better to use a symmetric cost instead. We
-show several symmetric variational costs, and demonstrate how GANs can be derived from them. We have succeeded in
-training with one of such costs, and demonstrate some sample images.
 
 
 
-<h1 id="abstract">Abstract</h1>
+
+
+
+<h2 id="abstract">Abstract</h2>
 
 <p>Variational Autoencoders optimize an asymmetric cost, which is undesirable. We extend VAEs to a symmetric cost, which is the sum of two Minimum Description Length (MDL) objectives. This MDL objective has two problems. First, it cannot be directly computed. In approximating it we obtain the discriminator found in Generative Adversarial Networks. Second, it involves two pairs of opposing costs, which makes optimization difficult. We break the opponency by minimizing an upper bound on the MDL objective, obtaining the Extended Helmholtz Machine (EHM). We demonstrate early results of an EHM trained on LSUN bedroom images.</p>
 
-
-
-<h1 id="vaes-asymmetry">VAE’s asymmetry</h1>
+<h2 id="vaes-asymmetry">VAE’s asymmetry</h2>
 
 <blockquote>
-  <p>Notation: <script type="math/tex" id="MathJax-Element-3013">Q(x)</script> is the real data distribution. <script type="math/tex" id="MathJax-Element-3014">Q(z|x)</script> is the approximate posterior. <script type="math/tex" id="MathJax-Element-3015">P(z)</script> is the prior over the latent code and <script type="math/tex" id="MathJax-Element-3016">P(x|z)</script> is the likelihood of the generative model. Also, summations such as <script type="math/tex" id="MathJax-Element-3017">\sum_{x,z}Q(x,z)</script> imply Monte Carlo integration, so gradient is not taken on these terms. <strong>I’ve used summation instead of expectation</strong> to make my LaTeX code readable. Also, all lower-case letters are vectors.</p>
+  <p>Notation: <script type="math/tex" id="MathJax-Element-3662">Q(x)</script> is the real data distribution. <script type="math/tex" id="MathJax-Element-3663">Q(z|x)</script> is the approximate posterior. <script type="math/tex" id="MathJax-Element-3664">P(z)</script> is the prior over the latent code and <script type="math/tex" id="MathJax-Element-3665">P(x|z)</script> is the likelihood of the generative model. Also, summations such as <script type="math/tex" id="MathJax-Element-3666">\sum_{x,z}Q(x,z)</script> imply Monte Carlo integration, so gradient is not taken on these terms. <strong>I’ve used summation instead of expectation</strong> to make my LaTeX code readable. Also, all lower-case letters are vectors.</p>
 </blockquote>
 
 <p>The objective of VAE [9] is:</p>
@@ -47,9 +46,9 @@ training with one of such costs, and demonstrate some sample images.
   <p>When sampling from <script type="math/tex" id="MathJax-Element-3081">Q</script>, the teacher is teaching the “taught problems”. When sampling from <script type="math/tex" id="MathJax-Element-3082">P</script>, the student is asking questions about “untaught problems”.</p>
 </blockquote>
 
-<h1 id="symmetric-vae">Symmetric VAE</h1>
+<h2 id="symmetric-vae">Symmetric VAE</h2>
 
-<p>In the Symmetric VAE, the objective has two parts. The first part is the original VAE objective, with sampling performed from <script type="math/tex" id="MathJax-Element-1966">Q</script>. The second part is its symmetric form, with sampling performed from <script type="math/tex" id="MathJax-Element-1967">P</script>. It is written below:</p>
+<p>In the Symmetric VAE, the objective has two parts. The first part is the original VAE objective, with sampling performed from <script type="math/tex" id="MathJax-Element-3667">Q</script>. The second part is its symmetric form, with sampling performed from <script type="math/tex" id="MathJax-Element-3668">P</script>. It is written below:</p>
 
 <p><script type="math/tex; mode=display" id="MathJax-Element-3121">\begin{align*}
 &\sum_{x,z}Q(x,z)log\frac{Q(z|x)}{P(x,z)} + \sum_{x,z}P(x,z)log\frac{P(x|z)}{Q(x,z)}
@@ -57,22 +56,22 @@ training with one of such costs, and demonstrate some sample images.
 
 <p>This objective is an upper bound on the <script type="math/tex" id="MathJax-Element-3122">-logP(x)</script> and <script type="math/tex" id="MathJax-Element-3123">-logQ(z)</script> (plus two KLDs), which is exactly what we want. Unfortunately, we cannot optimize the above objective directly, because it involves <script type="math/tex" id="MathJax-Element-3124">Q(x,z)=Q(x)Q(z|x)</script>, which can be sampled from but cannot be computed (recall <script type="math/tex" id="MathJax-Element-3125">Q(x)</script> is the data distribution). To optimize the above objective, we need to approximate <script type="math/tex" id="MathJax-Element-3126">Q(x)</script>, and replace <script type="math/tex" id="MathJax-Element-3127">Q(x)</script> with its approximator. In doing this, we will obtain the discriminator of GANs [12].</p>
 
-<h2 id="approximating-qx">Approximating <script type="math/tex" id="MathJax-Element-3083">Q(x)</script></h2>
+<h3 id="approximating-qx">Approximating <script type="math/tex" id="MathJax-Element-3669">Q(x)</script></h3>
 
-<p>One method to approximately compute the Symmetric VAE objective is to use an approximate <script type="math/tex" id="MathJax-Element-3084">Q(x)</script>. We can train a normalized probability <script type="math/tex" id="MathJax-Element-3085">Q'(x)</script> to approximate <script type="math/tex" id="MathJax-Element-3086">Q(x)</script> by minimizing the cross entropy: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-3087">\begin{align*}
+<p>One method to approximately compute the Symmetric VAE objective is to use an approximate <script type="math/tex" id="MathJax-Element-3670">Q(x)</script>. We can train a normalized probability <script type="math/tex" id="MathJax-Element-3671">Q'(x)</script> to approximate <script type="math/tex" id="MathJax-Element-3672">Q(x)</script> by minimizing the cross entropy: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-3673">\begin{align*}
       &\sum_x Q(x)log\frac{1}{Q'(x)}
 \end{align*}</script></p>
 
-<p>When <script type="math/tex" id="MathJax-Element-3088">Q'(x)</script> and <script type="math/tex" id="MathJax-Element-3089">Q(x)</script> are identical, we can recover the original Symmetric VAE objective exactly.</p>
+<p>When <script type="math/tex" id="MathJax-Element-3674">Q'(x)</script> and <script type="math/tex" id="MathJax-Element-3675">Q(x)</script> are identical, we can recover the original Symmetric VAE objective exactly.</p>
 
-<p>One complication with the above approach is that training with <script type="math/tex" id="MathJax-Element-3090">Q'(x)</script>, a normalized probability, is difficult. So instead we train with <script type="math/tex" id="MathJax-Element-3091">Q''(x)</script>, an unnormalized probability of <script type="math/tex" id="MathJax-Element-3092">Q'(x)</script> <br>
-<script type="math/tex; mode=display" id="MathJax-Element-3093">
+<p>One complication with the above approach is that training with <script type="math/tex" id="MathJax-Element-3676">Q'(x)</script>, a normalized probability, is difficult. So instead we train with <script type="math/tex" id="MathJax-Element-3677">Q''(x)</script>, an unnormalized probability of <script type="math/tex" id="MathJax-Element-3678">Q'(x)</script> <br>
+<script type="math/tex; mode=display" id="MathJax-Element-3679">
 \frac{1}{Z} Q''(x) = Q'(x)
 </script> <br>
-where <script type="math/tex" id="MathJax-Element-3094">Z=\sum_x Q''(x)</script> is the partition function. </p>
+where <script type="math/tex" id="MathJax-Element-3680">Z=\sum_x Q''(x)</script> is the partition function. </p>
 
-<p>Now, to approximate <script type="math/tex" id="MathJax-Element-3095">Q(x)</script>, we train <script type="math/tex" id="MathJax-Element-3096">Q''(x)</script> to minimize:</p>
+<p>Now, to approximate <script type="math/tex" id="MathJax-Element-3681">Q(x)</script>, we train <script type="math/tex" id="MathJax-Element-3682">Q''(x)</script> to minimize:</p>
 
 <p><script type="math/tex; mode=display" id="MathJax-Element-2955">\begin{align*}
      & \sum_x Q(x) log\frac{1}{Q'(x)}
@@ -83,17 +82,15 @@ where <script type="math/tex" id="MathJax-Element-3094">Z=\sum_x Q''(x)</script>
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-2961">
-E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
+<p><script type="math/tex; mode=display" id="MathJax-Element-3614">
+E_{v \sim Q(x)}log\frac{1}{Q''(x)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 </script></p>
 
-<p>which is the discriminator loss in Generative Adversarial Networks. So <script type="math/tex" id="MathJax-Element-2962">Q''(x)</script> is the discriminator. Please refer to Appendix A for details of derivation.</p>
+<p>which is the discriminator loss in Generative Adversarial Networks. So <script type="math/tex" id="MathJax-Element-3615">Q''(x)</script> is the discriminator. Please refer to Appendix A for details of derivation.</p>
 
-<h1 id="extended-helmholtz-machine">Extended Helmholtz Machine</h1>
+<h2 id="extended-helmholtz-machine">Extended Helmholtz Machine</h2>
 
 <p>After some experiments, we found it extremely difficult to optimize a Symmetric VAE, possibly because of the opponency that exists in the wake phase and the sleep phase. </p>
-
-
 
 <p><script type="math/tex; mode=display" id="MathJax-Element-2117">
 \sum_{x,z}Q(x,z)log\frac{Q(z|x)}{P(z)P(x|z)} + \sum_{x,z}P(x,z)log\frac{P(x|z)}{Q(x)Q(z|x)}
@@ -109,7 +106,7 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <p>This objective is equivalent to the original Symmetric VAE objective, plus two entropy terms <script type="math/tex" id="MathJax-Element-2186">\sum_{x,z} Q(x,z)log\frac{1}{Q(z|x)}</script> and <script type="math/tex" id="MathJax-Element-2187">\sum_{x,z} P(x,z)log\frac{1}{P(x|z)}</script>.</p>
 
-<h2 id="results-of-ehm">Results of EHM</h2>
+<h3 id="results-of-ehm">Results of EHM</h3>
 
 <p>Here we provide some very early results of training the EHM. The images below are sampled from an EHM whose encoder, decoder and discriminator have structures similar to DCGAN [8]. This model is trained on 64x64 LSUN bedroom images. </p>
 
@@ -119,7 +116,7 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <p>After training the EHM, the wake-phase reconstruction loss is quite low, yet the sleep-phase reconstruction cost is high. Apparently the moment when the decoder starts to generate sharp images, the sleep-phase reconstruction cost starts rising. The implication of this is not yet understood. One possibility is that most of the latent dimensions are not utilized. As a result, there is no mutual information between those unutuilized dimensions and the generated image. Therefore, those dimensions could not be recovered from the image.</p>
 
-<p>Another problem with the current EHM formulation is that, when we feed the encoder with a real image, and ask the generator to reconstruct it, the reconstruction error is low, and we get a rather blurry reconstruction. [TODO: reconstruction samples]. These reconstructed samples look nothing like samples directly obtained by sampling from <script type="math/tex" id="MathJax-Element-3604">P(z)</script> then mapping it through the decoder, suggesting that <script type="math/tex" id="MathJax-Element-3605">Q(z|x)</script> does not produce posterior samples that are likely under the prior.</p>
+<p>Another problem with the current EHM formulation is that, when we feed the encoder with a real image, and ask the generator to reconstruct it, the reconstruction error is low, and we get a rather blurry reconstruction. [TODO: reconstruction samples]. These reconstructed samples look nothing like samples directly obtained by sampling from <script type="math/tex" id="MathJax-Element-3683">P(z)</script> then mapping it through the decoder, suggesting that <script type="math/tex" id="MathJax-Element-3684">Q(z|x)</script> does not produce posterior samples that are likely under the prior.</p>
 
 <blockquote>
   <p>We found it useful to tie the weights between the encoder and the decoder, which significantly speeds up training, and makes training a lot more stable. In our experiments, both the encoder and decoder are fully convolutional. The decoder, which consists of a series of transposed convolution, uses the transposed weights of the encoder. </p>
@@ -135,7 +132,7 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <p><br><br><br><br><br><br></p>
 
-<h1 id="discussion">Discussion</h1>
+<h2 id="discussion">Discussion</h2>
 
 <p>Currently we have several outstanding problems with the EHM:</p>
 
@@ -165,7 +162,7 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <p>We are still actively working on understanding and solving the three problems above.</p>
 
-<h1 id="conclusion">Conclusion</h1>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>Currently with so many outstanding problems, we cannot properly conclude yet. Here we briefly reiterate several important points:</p>
 
@@ -179,7 +176,7 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <p>A discussion on using the discriminator as “image prior” is TBD.</p>
 
-<h1 id="references">References</h1>
+<h2 id="references">References</h2>
 
 <p>[1] Martin Arjovsky, et al., Wasserstein GAN <br>
 [2] Max Welling, et al., Bayesian Learning via Stochastic Gradient Langevin Dynamics <br>
@@ -198,7 +195,9 @@ E_{v \sim Q(v)}log\frac{1}{Q''(v)} - E_{x \sim P(x)}log\frac{1}{Q''(x)}
 
 <hr>
 
-<h1 id="appendix">Appendix</h1>
+<p><br><br><br><br><br><br></p>
+
+<h2 id="appendix">Appendix</h2>
 
 <h3 id="a-discriminator-loss">A. Discriminator loss</h3>
 
@@ -255,27 +254,29 @@ Z =& \sum_x Q''(x)
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-3609">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-3657">\begin{align*}
      &\nabla_\phi log\frac{P(x|z)}{Q'(x)}
 \\=&  \nabla_\phi log\frac{1}{Q'(x)} 
        - \nabla_\phi log\frac{1}{P(x|z)}
 \end{align*}</script></p>
 
-<p>Note that in GANs, <script type="math/tex" id="MathJax-Element-3610">P(x|z)=1</script>, but it isn’t the case for VAEs, which is why we have the second term above. The first term in the above can be written as: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-3611">\begin{align*}
+<p>Note that in GANs, <script type="math/tex" id="MathJax-Element-3658">P(x|z)=1</script>, but it isn’t the case for VAEs, which is why we have the second term above. The first term in the above can be written as: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-3659">\begin{align*}
      & \nabla_x log \frac{1}{Q'(x)} \frac{\partial x}{\partial \phi}
 \\=&[\nabla_x log \frac{1}{Q''(x)} + \nabla_x logZ]  \frac{\partial x}{\partial \phi}
 \\=&\nabla_x log \frac{1}{Q''(x)} \frac{\partial x}{\partial \phi}
      && \text{$Z$ does not depend on $x$}
 \end{align*}</script></p>
 
-<p>Which is the generator gradient.</p>
+<p>Which is the generator gradient. The above also suggests that the unnormalized probability <script type="math/tex" id="MathJax-Element-3660">Q''(x)</script> can be used directly to replace <script type="math/tex" id="MathJax-Element-3661">Q(x)</script> in optimization.</p>
 
 <p><br><br><br><br><br><br></p>
 
 <hr>
 
-<h1 id="extras-do-we-really-need-an-external-discriminator">Extras: Do we really need an external discriminator?</h1>
+<p><br><br><br><br><br><br></p>
+
+<h2 id="extras-do-we-really-need-an-external-discriminator">Extras: Do we really need an external discriminator?</h2>
 
 <p>Autoregressive models can generate sharp images without the use of a discriminator. This suggests that, under the right conditions, it is possible to get rid of the discriminator and still get high-quality models. But how do we do that with a latent variable model?</p>
 
