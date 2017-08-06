@@ -23,7 +23,7 @@ See [Research Direction](/direction) for details.
 
 ## Active projects
 
-* Variational Autoencoder with multimodal likelihood and posterior
+* Variational Autoencoder with multimodal likelihood and posterior [Link](/blog/multimodal)
 * Symmetric Variational Autoencoder (Extended Helmholtz Machine) [Link](/blog/symmetric_vae)
 * Variance reduction for large categorical variables
 * MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
