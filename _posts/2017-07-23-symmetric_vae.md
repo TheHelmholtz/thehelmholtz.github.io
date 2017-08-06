@@ -4,17 +4,12 @@ title:  "Symmetric variational loss and GAN"
 date:   2017-08-05 10:00:00 +0800
 permalink: /blog/symmetric_vae
 comments: true
-excerpt: We discuss the asymmetry of Variational Autoencoders, and why it might be better to use a symmetric cost instead. We show several symmetric variational costs, and demonstrate how GANs can be derived from them. We have succeeded in training with one of such costs, and demonstrate some sample images.
 categories: jekyll update
 ---
 
 
 
-<h2 id="abstract">Abstract</h2>
-
-<p>Variational Autoencoders optimize an asymmetric cost, which is undesirable. We extend VAEs to a symmetric cost, which is the sum of two Minimum Description Length (MDL) objectives. This MDL objective has two problems. First, it cannot be directly computed. In approximating it we obtain the discriminator found in Generative Adversarial Networks. Second, it involves two pairs of opposing costs, which makes optimization difficult. We break the opponency by minimizing an upper bound on the MDL objective, obtaining the Extended Helmholtz Machine (EHM). We demonstrate early results of an EHM trained on LSUN bedroom images.</p>
-
-
+<p>In this post, we’ll look into a kind of variational autoencoder that tries to reconstruct both the input and the latent code. Along the way we’ll show how to derive GAN’s discriminator from such a variational loss. We’ll start with the fact that VAE’s sampling is asymmetric, and why this asymmetry might give us problems.</p>
 
 <h2 id="vaes-asymmetry">VAE’s asymmetry</h2>
 
