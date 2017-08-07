@@ -11,6 +11,8 @@ categories: jekyll update
 
 <p>In this post, we’ll look into a kind of variational autoencoder that tries to reconstruct both the input and the latent code. Along the way we’ll show how to derive GAN’s discriminator from such a variational loss. We’ll start with the fact that VAE’s sampling is asymmetric, and why this asymmetry might give us problems.</p>
 
+
+
 <h2 id="vaes-asymmetry">VAE’s asymmetry</h2>
 
 <blockquote>
@@ -48,42 +50,50 @@ categories: jekyll update
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1589">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-23">\begin{align*}
 &\sum_{x,z}Q(x,z)log\frac{Q(z|x)}{P(x,z)} + \sum_{x,z}P(x,z)log\frac{P(x|z)}{Q(x,z)}
 \end{align*}</script></p>
 
-<p>This objective is an upper bound on <script type="math/tex" id="MathJax-Element-1590">-logP(x)</script> and <script type="math/tex" id="MathJax-Element-1591">-logQ(z)</script> (plus two KLDs), which is exactly what we want. Unfortunately, we cannot optimize the above objective directly, because it involves <script type="math/tex" id="MathJax-Element-1592">Q(x,z)=Q(x)Q(z|x)</script>, which can be sampled from but cannot be computed (recall <script type="math/tex" id="MathJax-Element-1593">Q(x)</script> is the real data distribution). To optimize the above objective, we need to approximate <script type="math/tex" id="MathJax-Element-1594">Q(x)</script>, and replace <script type="math/tex" id="MathJax-Element-1595">Q(x)</script> with its approximator. In doing this, we will obtain the discriminator of GANs [12].</p>
+<p>This objective is an upper bound on <script type="math/tex" id="MathJax-Element-24">-logP(x)</script> and <script type="math/tex" id="MathJax-Element-25">-logQ(z)</script> (plus two KLDs), which is exactly what we want. Unfortunately, we cannot optimize the above objective directly, because it involves <script type="math/tex" id="MathJax-Element-26">Q(x,z)=Q(x)Q(z|x)</script>, which can be sampled from but cannot be computed (recall <script type="math/tex" id="MathJax-Element-27">Q(x)</script> is the real data distribution). To optimize the above objective, we need to approximate <script type="math/tex" id="MathJax-Element-28">Q(x)</script>, and replace <script type="math/tex" id="MathJax-Element-29">Q(x)</script> with its approximator. In doing this, we will obtain the discriminator of GANs [12].</p>
 
-<h3 id="approximating-qx">Approximating <script type="math/tex" id="MathJax-Element-1611">Q(x)</script></h3>
+
+
+<h3 id="approximating-qx">Approximating <script type="math/tex" id="MathJax-Element-30">Q(x)</script></h3>
 
 <blockquote>
-  <p>A comment on symmetry: <script type="math/tex" id="MathJax-Element-1612">P(z)</script> is the prior over the “latent domain”. It encourages latent samples to be sparse (or, to have small magnitude, in the case of Gaussian priors). Correspondingly, <script type="math/tex" id="MathJax-Element-1613">Q(x)</script> is the prior over the “visible domain”, and it encourages visible samples to look “real”.</p>
+  <p>A comment on symmetry: <script type="math/tex" id="MathJax-Element-31">P(z)</script> is the prior over the “latent domain”. It encourages latent samples to be sparse (or, to have small magnitude, in the case of Gaussian priors). Correspondingly, <script type="math/tex" id="MathJax-Element-32">Q(x)</script> is the prior over the “visible domain”, and it encourages visible samples to look “real”.</p>
 </blockquote>
 
-<p>We can train a normalized probability <script type="math/tex" id="MathJax-Element-1614">Q'(x)</script> to approximate <script type="math/tex" id="MathJax-Element-1615">Q(x)</script> by minimizing the cross entropy: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-1616">\begin{align*}
+<p>We can train a normalized probability <script type="math/tex" id="MathJax-Element-33">Q'(x)</script> to approximate <script type="math/tex" id="MathJax-Element-34">Q(x)</script> by minimizing the cross entropy: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-35">\begin{align*}
       &\sum_x Q(x)log\frac{1}{Q'(x)}
 \end{align*}</script></p>
 
-<p>When <script type="math/tex" id="MathJax-Element-1617">Q'(x)</script> and <script type="math/tex" id="MathJax-Element-1618">Q(x)</script> are identical, we can recover the original Symmetric VAE objective exactly.</p>
+<p>When <script type="math/tex" id="MathJax-Element-36">Q'(x)</script> and <script type="math/tex" id="MathJax-Element-37">Q(x)</script> are identical, we can recover the original Symmetric VAE objective exactly.</p>
 
-<p>One complication with the above approach is that training with <script type="math/tex" id="MathJax-Element-1619">Q'(x)</script>, a normalized probability, is difficult. So instead we train with <script type="math/tex" id="MathJax-Element-1620">Q''(x)</script>, an unnormalized probability of <script type="math/tex" id="MathJax-Element-1621">Q'(x)</script>. As it turns out, in order to train <script type="math/tex" id="MathJax-Element-1622">Q''(x)</script> to approximate <script type="math/tex" id="MathJax-Element-1623">Q(x)</script>, we need to minimize the unnormalized cross entropy from <script type="math/tex" id="MathJax-Element-1624">Q(x)</script> to <script type="math/tex" id="MathJax-Element-1625">Q''(x)</script>, and at the same time we need to maximize the unnormalized cross entropy of <script type="math/tex" id="MathJax-Element-1626">P(x)</script> to <script type="math/tex" id="MathJax-Element-1627">Q''(x)</script>, as in:</p>
+<p>One complication with the above approach is that training with <script type="math/tex" id="MathJax-Element-38">Q'(x)</script>, a normalized probability, is difficult. So instead we train with <script type="math/tex" id="MathJax-Element-39">Q''(x)</script>, an unnormalized probability of <script type="math/tex" id="MathJax-Element-40">Q'(x)</script>. As it turns out, in order to train <script type="math/tex" id="MathJax-Element-41">Q''(x)</script> to approximate <script type="math/tex" id="MathJax-Element-42">Q(x)</script>, we need to minimize the unnormalized cross entropy from <script type="math/tex" id="MathJax-Element-43">Q(x)</script> to <script type="math/tex" id="MathJax-Element-44">Q''(x)</script>, and at the same time we need to maximize the unnormalized cross entropy of <script type="math/tex" id="MathJax-Element-45">P(x)</script> to <script type="math/tex" id="MathJax-Element-46">Q''(x)</script>, as in:</p>
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1568">
+
+
+<p><script type="math/tex; mode=display" id="MathJax-Element-47">
 \sum_x Q(x) log\frac{1}{Q''(x)} - \sum_x P(x) log\frac{1}{Q''(x)}
 </script></p>
 
-<p>This is the discriminator loss minimized in WGAN [1]. So <script type="math/tex" id="MathJax-Element-1569">logQ''(x)</script> is the discriminator/critic. Please refer to Appendix A for how this loss is derived from the perspective of approximating <script type="math/tex" id="MathJax-Element-1570">Q(x)</script>.</p>
+<p>This is the discriminator loss minimized in WGAN [1]. So <script type="math/tex" id="MathJax-Element-48">logQ''(x)</script> is the discriminator/critic. Please refer to Appendix A for how this loss is derived from the perspective of approximating <script type="math/tex" id="MathJax-Element-49">Q(x)</script>.</p>
 
 <blockquote>
-  <p>Previously we talked about a teacher answering the student’s questions. <script type="math/tex" id="MathJax-Element-1571">Q(x)</script>, or its approximation, <script type="math/tex" id="MathJax-Element-1572">Q''(x)</script>, is this teacher. If we want the student to learn and improve its work, it will be much better if the teacher can provide “useful guidance” instead of just bashing on the student when he misbehaves. We will further explore this teaching interpretation later.</p>
+  <p>Previously we talked about a teacher answering the student’s questions. <script type="math/tex" id="MathJax-Element-50">Q(x)</script>, or its approximation, <script type="math/tex" id="MathJax-Element-51">Q''(x)</script>, is this teacher. If we want the student to learn and improve its work, it will be much better if the teacher can provide “useful guidance” instead of just bashing on the student when he misbehaves. We will further explore this teaching interpretation later.</p>
 </blockquote>
+
+
 
 <h2 id="extended-helmholtz-machine">Extended Helmholtz Machine</h2>
 
-<p>After some experiments, we found it extremely difficult to optimize a Symmetric VAE, possibly because of the opponency that exists in the wake phase and the sleep phase. Specifically, the wake phase objective minimizes <script type="math/tex" id="MathJax-Element-106">logQ(z|x)</script>, yet the sleep phase maximizes it. Also, the wake phase objective maximizes <script type="math/tex" id="MathJax-Element-107">logP(x|z)</script>, while the sleep phase minimizes it.</p>
+<p>After some experiments, we found it extremely difficult to optimize a Symmetric VAE, possibly because of the opponency that exists in the wake phase and the sleep phase. Specifically, the wake phase objective minimizes <script type="math/tex" id="MathJax-Element-52">logQ(z|x)</script>, yet the sleep phase maximizes it. Also, the wake phase objective maximizes <script type="math/tex" id="MathJax-Element-53">logP(x|z)</script>, while the sleep phase minimizes it.</p>
 
 <p>If we remove the opponency, we get the objective of the Extended Helmholtz Machine, which minimizes two cross-entropies:</p>
+
+
 
 <p><script type="math/tex; mode=display" id="MathJax-Element-54">\begin{align*}
      &\sum_{x,z}Q(x,z)log\frac{1}{P(x,z)} + \sum_{x,z}P(x,z)log\frac{1}{Q(x,z)}
@@ -98,6 +108,8 @@ categories: jekyll update
 <p>Here we provide some very early results of training the EHM. The images below are sampled from an EHM whose encoder, decoder and discriminator have structures similar to DCGAN [8]. This model is trained on 64x64 LSUN bedroom images. </p>
 
 <p><img src="https://lh3.googleusercontent.com/-CALIt-h6MkQ/WX84FF62ruI/AAAAAAAADjU/clpwWghMihY4-Xz0SlqAvqdfaCDUA3xVQCLcBGAs/s800/ehm7_samples_01_014000.png" alt="enter image description here" title="ehm7_samples_01_014000.png"></p>
+
+
 
 <h3 id="current-problems">Current Problems</h3>
 
@@ -123,7 +135,9 @@ categories: jekyll update
 
 <p><img src="https://lh3.googleusercontent.com/-RAP0CIpG9VQ/WYZ1H1kyjOI/AAAAAAAADjs/vPlOBoUXLpIooW0DOSwWDkZsp4PfHIQpQCLcBGAs/s800/blur_recon.png" alt="enter image description here" title="blur_recon.png"></p>
 
-<p>These reconstructed samples look nothing like samples directly obtained by sampling from <script type="math/tex" id="MathJax-Element-1535">P(z)</script> then mapping <script type="math/tex" id="MathJax-Element-1536">z</script> through the decoder. One possible explanation for this is that, we cannot rely on the posterior obtained by a single pass to do reconstruction. After several stages of spatial down-sampling, it is difficult to imagine how the reconstruction can stay sharp. Instead, we might need to infer the posterior by optimization [3] [2], then perform reconstruction using the inferred posterior.</p>
+<p>These reconstructed samples look nothing like samples directly obtained by sampling from <script type="math/tex" id="MathJax-Element-57">P(z)</script> then mapping <script type="math/tex" id="MathJax-Element-58">z</script> through the decoder. One possible explanation for this is that, we cannot rely on the posterior obtained by a single pass to do reconstruction. After several stages of spatial down-sampling, it is difficult to imagine how the reconstruction can stay sharp. Instead, we might need to infer the posterior by optimization [3] [2], then perform reconstruction using the inferred posterior.</p>
+
+
 
 <h2 id="conclusion">Conclusion</h2>
 
@@ -146,15 +160,14 @@ categories: jekyll update
 [9] Diederik Kingma, et al., Auto-Encoding Variational Bayes <br>
 [10] David Ackley, et al., A Learning Algorithm for Boltzmann Machines <br>
 [11] Peter Dayan, et al., The Helmholtz Machine <br>
-[12] Ian Goodfellow, et al., Generative Adversarial Networks</p>
+[12] Ian Goodfellow, et al., Generative Adversarial Networks <br>
+[13] Radford Neal, MCMC using Hamiltonian dynamics</p>
 
 <p><br><br><br><br><br><br></p>
 
 <hr>
 
 <p><br><br><br><br><br><br></p>
-
-
 
 <h2 id="appendix">Appendix</h2>
 
@@ -173,7 +186,7 @@ categories: jekyll update
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1336">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-771">\begin{align*}
 Z =& \sum_x Q''(x)
 \\=& \sum_x P(x|z) \frac{Q''(x)}{P(x|z)} && \text{Importance sampling. Equality holds for any $z$}
 \\=& \sum_z P(z) \sum_x P(x|z) \frac{Q''(x)}{P(x|z)} &&\text{Sum over $z$}
@@ -181,60 +194,66 @@ Z =& \sum_x Q''(x)
 \end{align*}</script></p>
 
 <blockquote>
-  <p>This estimator of <script type="math/tex" id="MathJax-Element-1337">Z</script> is in fact sampling from <script type="math/tex" id="MathJax-Element-1338">P(x)</script>, but does not require us to estimate <script type="math/tex" id="MathJax-Element-1339">P(x)</script> itself (as is required in the simpler estimator of <script type="math/tex" id="MathJax-Element-1340">Z=\sum_x P(x) \frac{Q''(x)}{P(x)}</script>). </p>
+  <p>This estimator of <script type="math/tex" id="MathJax-Element-772">Z</script> is in fact sampling from <script type="math/tex" id="MathJax-Element-773">P(x)</script>, but does not require us to estimate <script type="math/tex" id="MathJax-Element-774">P(x)</script> itself (as is required in the simpler estimator of <script type="math/tex" id="MathJax-Element-775">Z=\sum_x P(x) \frac{Q''(x)}{P(x)}</script>). </p>
   
-  <p>Also, strictly, we are not required to sample from <script type="math/tex" id="MathJax-Element-1341">P(x)</script>, however to reduce variance we have to sample from a distribution as similar to <script type="math/tex" id="MathJax-Element-1342">Q'(x)</script> as possible. We can’t use <script type="math/tex" id="MathJax-Element-1343">Q(x)</script> itself, so <script type="math/tex" id="MathJax-Element-1344">P(x)</script> is the best we have. Of course, if we can sample from <script type="math/tex" id="MathJax-Element-1345">Q'(x)</script> directly, that’ll be even better. But it’s not yet clear how this can be done, which is why we use importance sampling in the first place.</p>
+  <p>Also, strictly, we are not required to sample from <script type="math/tex" id="MathJax-Element-776">P(x)</script>, however to reduce variance we have to sample from a distribution as similar to <script type="math/tex" id="MathJax-Element-777">Q'(x)</script> as possible. We can’t use <script type="math/tex" id="MathJax-Element-778">Q(x)</script> itself, so <script type="math/tex" id="MathJax-Element-779">P(x)</script> is the best we have. </p>
+  
+  <p>Of course, if we can sample from <script type="math/tex" id="MathJax-Element-780">Q'(x)</script> directly, that’ll be even better. But this usually isn’t straightforward, which is why we use importance sampling in the first place. In order to sample from <script type="math/tex" id="MathJax-Element-781">Q'(x)</script>, we might have to use some variants of MCMC (Hamiltonian [13] or Langevin [2] dynamics). If we could do this, it means that we’ll be able to use the discriminator as the generator. Sounds like a pretty fun project, but we’ll leave that for another post.</p>
 </blockquote>
 
-<p>Now, to approximate <script type="math/tex" id="MathJax-Element-1346">Q(x)</script>, we train <script type="math/tex" id="MathJax-Element-1347">Q''(x)</script> to minimize the cross entropy from <script type="math/tex" id="MathJax-Element-1348">Q(x)</script> to <script type="math/tex" id="MathJax-Element-1349">Q'(x)</script>:</p>
+<p>Now, to approximate <script type="math/tex" id="MathJax-Element-782">Q(x)</script>, we train <script type="math/tex" id="MathJax-Element-783">Q''(x)</script> to minimize the cross entropy from <script type="math/tex" id="MathJax-Element-784">Q(x)</script> to <script type="math/tex" id="MathJax-Element-785">Q'(x)</script>:</p>
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1658">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-78">\begin{align*}
      & \sum_x Q(x) log\frac{1}{Q'(x)}
 \\=& \sum_x Q(x) [log\frac{1}{Q''(x)} + logZ]
 \end{align*}</script></p>
 
-<p>Now we will expand <script type="math/tex" id="MathJax-Element-1659">Z</script> to its estimator. Note that <script type="math/tex" id="MathJax-Element-1660">(x,z)</script> in <script type="math/tex" id="MathJax-Element-1661">Z</script> are sampled from <script type="math/tex" id="MathJax-Element-1662">P</script>, and is completely independent from the <script type="math/tex" id="MathJax-Element-1663">x</script> samples taken from <script type="math/tex" id="MathJax-Element-1664">Q</script>. To reflect this independence, we take out <script type="math/tex" id="MathJax-Element-1665">logZ</script> as an independent term. The above becomes: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-1666">\begin{align*}
+<p>Now we will expand <script type="math/tex" id="MathJax-Element-79">Z</script> to its estimator. Note that <script type="math/tex" id="MathJax-Element-80">(x,z)</script> in <script type="math/tex" id="MathJax-Element-81">Z</script> are sampled from <script type="math/tex" id="MathJax-Element-82">P</script>, and is completely independent from the <script type="math/tex" id="MathJax-Element-83">x</script> samples taken from <script type="math/tex" id="MathJax-Element-84">Q</script>. To reflect this independence, we take out <script type="math/tex" id="MathJax-Element-85">logZ</script> as an independent term. The above becomes: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-86">\begin{align*}
      &\sum_x Q(x) log\frac{1}{Q''(x)} + logZ
 \\=&\sum_x Q(x) log\frac{1}{Q''(x)} + log\sum_{x,z}P(x,z)\frac{Q''(x)}{P(x|z)} 
 \\=&\sum_x Q(x)  log\frac{1}{Q''(x)}   - log\sum_{x,z}P(x,z)\frac{P(x|z)}{Q''(x)}
 \\\le &\sum_x Q(x) log\frac{1}{Q''(x)}  - \sum_{x,z}P(x,z) log\frac{P(x|z)}{Q''(x)}
 \end{align*}</script></p>
 
-<p>Because we only minimize the above w.r.t. parameters of <script type="math/tex" id="MathJax-Element-1667">Q''(x)</script>, it is equivalent to minimizing:</p>
+<p>Because we only minimize the above w.r.t. parameters of <script type="math/tex" id="MathJax-Element-87">Q''(x)</script>, it is equivalent to minimizing:</p>
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1670">
+
+
+<p><script type="math/tex; mode=display" id="MathJax-Element-88">
 \sum_x Q(x) log\frac{1}{Q''(x)} - \sum_x P(x) log\frac{1}{Q''(x)}
 </script></p>
 
 <p>This is the discriminator loss minimized by WGAN [1].</p>
 
+
+
 <h3 id="b-generator-gradient">B. Generator Gradient</h3>
 
-<p>For the sake of demonstrating VAE’s connection with GANs, we can also obtain a gradient term similar to the generator gradient in GANs. Since GANs do not have the inference network <script type="math/tex" id="MathJax-Element-85">Q(z|x)</script>, we remove all components of <script type="math/tex" id="MathJax-Element-86">Q(z|x)</script>, and replace <script type="math/tex" id="MathJax-Element-87">Q(x)</script> with <script type="math/tex" id="MathJax-Element-88">Q'(x)</script>:</p>
+<p>For the sake of demonstrating VAE’s connection with GANs, we can also obtain a gradient term similar to the generator gradient in GANs. Since GANs do not have the inference network <script type="math/tex" id="MathJax-Element-89">Q(z|x)</script>, we remove all components of <script type="math/tex" id="MathJax-Element-90">Q(z|x)</script>, and replace <script type="math/tex" id="MathJax-Element-91">Q(x)</script> with <script type="math/tex" id="MathJax-Element-92">Q'(x)</script>:</p>
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-89">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-93">\begin{align*}
      &\sum_z P(z) \sum_x P(x|z)log\frac{P(x|z)}{Q'(x)}
 \end{align*}</script></p>
 
-<p>We differentiate <script type="math/tex" id="MathJax-Element-90">log\frac{P(x|z)}{Q'(x)}</script> against the decoder parameter <script type="math/tex" id="MathJax-Element-91">\phi</script> (the summations are Monte Carlo integration):</p>
+<p>We differentiate <script type="math/tex" id="MathJax-Element-94">log\frac{P(x|z)}{Q'(x)}</script> against the decoder parameter <script type="math/tex" id="MathJax-Element-95">\phi</script> (the summations are Monte Carlo integration):</p>
 
 
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-1537">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-96">\begin{align*}
      &\nabla_\phi log\frac{P(x|z)}{Q'(x)}
 \\=&  \nabla_\phi log\frac{1}{Q'(x)} 
        - \nabla_\phi log\frac{1}{P(x|z)}
 \end{align*}</script></p>
 
-<p>Note that in GANs, <script type="math/tex" id="MathJax-Element-1538">P(x|z)=1</script>, but it isn’t the case for VAEs, which is why we have the second term above. The first term in the above can be written as: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-1539">\begin{align*}
+<p>Note that in GANs, <script type="math/tex" id="MathJax-Element-97">P(x|z)=1</script>, but it isn’t the case for VAEs, which is why we have the second term above. The first term in the above can be written as: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-98">\begin{align*}
      & \nabla_x log \frac{1}{Q'(x)} \frac{\partial x}{\partial \phi}
 \\=&[\nabla_x log \frac{1}{Q''(x)} + \nabla_x logZ]  \frac{\partial x}{\partial \phi}
 \\=&\nabla_x log \frac{1}{Q''(x)} \frac{\partial x}{\partial \phi}
      && \text{$Z$ does not depend on $x$}
 \end{align*}</script></p>
 
-<p>Which is the generator gradient. The above also suggests that the unnormalized probability <script type="math/tex" id="MathJax-Element-1540">Q''(x)</script> can be used directly to replace <script type="math/tex" id="MathJax-Element-1541">Q(x)</script> in optimization.</p>
+<p>Which is the generator gradient. The above also suggests that the unnormalized probability <script type="math/tex" id="MathJax-Element-99">Q''(x)</script> can be used directly to replace <script type="math/tex" id="MathJax-Element-100">Q(x)</script> in optimization.</p>
