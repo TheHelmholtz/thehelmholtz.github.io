@@ -128,7 +128,7 @@ We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z<
 
 <p>We focus on the gradient from the generative model, and pathwise gradient w.r.t. <script type="math/tex" id="MathJax-Element-10772">\theta</script> is:</p>
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-13569">\begin{align*}
+<p><script type="math/tex; mode=display" id="MathJax-Element-13665">\begin{align*}
      & \nabla_\theta \sum_x Q(x) \sum_z Q(z|x) log\frac{1}{P(x,z)}
 \\=& - \sum_{x,z} Q(x,z) \nabla_\theta logP(x,z)
      &&\text{only take pathwise gradient}
@@ -138,42 +138,29 @@ We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z<
 \end{align*}</script></p>
 
 <p>We subtract a baseline in the gradient: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13570">
+<script type="math/tex; mode=display" id="MathJax-Element-13666">
  -\sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x,z))
 </script></p>
 
 <p>This introduces a bias in the gradient: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13571">
+<script type="math/tex; mode=display" id="MathJax-Element-13667">
  -\sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  (-b(x,z))
 </script></p>
 
 <p>We can correct the bias by adding the following into the update: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13572">\begin{align*}
+<script type="math/tex; mode=display" id="MathJax-Element-13668">\begin{align*}
      & - \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T b(x,z)
 \end{align*}</script></p>
 
-<p>We maintain an adaptive estimate of <script type="math/tex" id="MathJax-Element-13573">\omega = \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  b(x,z)</script> using an exponential moving average of samples from the minibatches.</p>
+<p>We maintain an adaptive estimate of <script type="math/tex" id="MathJax-Element-13669">\omega = \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  b(x,z)</script> using an exponential moving average of samples from the minibatches.</p>
 
-<p>Note that in practice, we optimize with <script type="math/tex" id="MathJax-Element-13574">M</script> minibatches, each with <script type="math/tex" id="MathJax-Element-13575">N</script> samples, so the update (without learning rate) is: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13576">\begin{align*}
+<p>Note that in practice, we optimize with <script type="math/tex" id="MathJax-Element-13670">M</script> minibatches, each with <script type="math/tex" id="MathJax-Element-13671">N</script> samples, so the update (without learning rate) is: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-13672">\begin{align*}
      & \sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m}  \sum_z Q(z|x) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x, z)) \right] 
         +\frac{MN}{N}\omega
 \\=&\sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m} \sum_z Q(z|x) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x,z)) 
         + \omega \right] 
 \end{align*}</script></p>
-
-<p>In order to merge <script type="math/tex" id="MathJax-Element-13577">\omega</script> into backpropagation, there are two approaches: <br>
-1. compute <script type="math/tex" id="MathJax-Element-13578">b(x,z)</script> for all values of <script type="math/tex" id="MathJax-Element-13579">m</script>, and add the sum into <script type="math/tex" id="MathJax-Element-13580">((\nabla_z logP(x, z))^T - b(x,z)) </script> <br>
-2. compute <script type="math/tex" id="MathJax-Element-13581">b(x,z)</script> for all values of <script type="math/tex" id="MathJax-Element-13582">m</script>, but only backpropagate to the immediately preceding layer</p>
-
-<p>The second approach is probably less efficient, but it also gives us less bias.</p>
-
-<p>To understand what this bias correction term is doing, let us revisit <script type="math/tex" id="MathJax-Element-13583">\omega</script>, which is an estimate of: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13584">\begin{align*}
-     & \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  b(x,z)
-\end{align*}</script></p>
-
-<p>We note <script type="math/tex" id="MathJax-Element-13585">b(x,z)</script> is trained to approximate the gradient in the case that <script type="math/tex" id="MathJax-Element-13586">x</script> is classified as <script type="math/tex" id="MathJax-Element-13587">z</script>. Thus the above term is equivalent to asking this question: if <script type="math/tex" id="MathJax-Element-13588">x</script> was actually classified as <script type="math/tex" id="MathJax-Element-13589">z</script>, what would the update to <script type="math/tex" id="MathJax-Element-13590">\theta</script> be? For categories that are “similar”, their corresponding values of <script type="math/tex" id="MathJax-Element-13591">b(x,z)</script> would be very correlated. Consequently, learning as a result of the <script type="math/tex" id="MathJax-Element-13592">\omega</script> term is highly correlated for categories that are similar. This is the same mechanism employed in Knowledge Distillation to reduce variance in learning.</p>
 
 <h2 id="experimental-results">Experimental Results</h2>
 
@@ -194,5 +181,4 @@ We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z<
 <p>[1] Teuvo Kohonen, The Self-organizing map <br>
 [2] Andriy Mnih, et al., Neural Variational Inference and Learning in Belief Networks <br>
 [3] Eric Jang, et al., Categorical Reparameterization with Gumbel-Softmax <br>
-[4] Chris Maddison, et al., The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables <br>
-[5] Geoffrey Hinton, et al., Distilling the Knowledge in a Neural Network</p>
+[4] Chris Maddison, et al., The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables</p>
