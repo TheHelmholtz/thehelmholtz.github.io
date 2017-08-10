@@ -96,24 +96,22 @@ categories: jekyll update
 
 <h3 id="input-dependent-baseline">Input-dependent baseline</h3>
 
-<p>In this section, we give a specific implementation of the CTC scheme in the framework of VAEs, along with an input-dependent baseline method for variance reduction.</p>
+<p>In this section, we give a specific implementation of the CTC scheme in the framework of VAEs, along with an input-dependent baseline method for variance reduction. The basic idea is that we’ll try to make the gradient zero-mean by predicting it and subtracting the predicted value. And we reduce bias by adding back the subtracted gradient in a momentum term.</p>
 
 <blockquote>
   <p>Notation:  <br>
   1. in this section, all lower-case letters are vectors. Typing all the bold letters is too tedious &gt;.&lt; <br>
-  2. <script type="math/tex" id="MathJax-Element-10571">Q(x)</script> is the real data distribution <br>
-  3. <script type="math/tex" id="MathJax-Element-10572">Q(z|x)</script> is the approximate posterior <br>
-  4. <script type="math/tex" id="MathJax-Element-10573">P(x,z)</script> is the generative model <br>
+  2. <script type="math/tex" id="MathJax-Element-13773">Q(x)</script> is the real data distribution <br>
+  3. <script type="math/tex" id="MathJax-Element-13774">Q(z|x)</script> is the approximate posterior <br>
+  4. <script type="math/tex" id="MathJax-Element-13775">P(x,z)</script> is the generative model <br>
   4. Summations imply monte carlo integration</p>
 </blockquote>
 
 <p>The objective we minimize in a VAE is: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-10574">
+<script type="math/tex; mode=display" id="MathJax-Element-13776">
 \sum_x Q(x) \sum_z Q(z|x) log\frac{Q(z|x)}{P(x,z)}
 </script> <br>
-We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z</script> using the following procedure:</p>
-
-
+We compute the latent code <script type="math/tex" id="MathJax-Element-13777">z</script> using the following procedure:</p>
 
 <p><script type="math/tex; mode=display" id="MathJax-Element-10770">\begin{align*}  
            s =& f_\theta(x)
@@ -128,43 +126,44 @@ We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z<
 
 <p>We focus on the gradient from the generative model, and pathwise gradient w.r.t. <script type="math/tex" id="MathJax-Element-10772">\theta</script> is:</p>
 
-<p><script type="math/tex; mode=display" id="MathJax-Element-13665">\begin{align*}
-     & \nabla_\theta \sum_x Q(x) \sum_z Q(z|x) log\frac{1}{P(x,z)}
-\\=& - \sum_{x,z} Q(x,z) \nabla_\theta logP(x,z)
+<p><script type="math/tex; mode=display" id="MathJax-Element-14771">\begin{align*}
+     & \nabla_\theta log\frac{1}{P(x,z)}
      &&\text{only take pathwise gradient}
-\\=& -\sum_{x,z} Q(x,z) \nabla_z logP(x, z) \frac{\partial z}{\partial \theta}
-\\=& -\sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T (\nabla_z logP(x, z))^T
-     &&\text{transpose to improve presentation}
+\\=& - \nabla_\theta logP(x,z)
+\\=& - \nabla_z logP(x, z) \frac{\partial z}{\partial \theta}
 \end{align*}</script></p>
 
 <p>We subtract a baseline in the gradient: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13666">
- -\sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x,z))
+<script type="math/tex; mode=display" id="MathJax-Element-14772">
+ -  ((\nabla_z logP(x, z)) - b(x,z)) \frac{\partial z}{\partial \theta}
 </script></p>
 
 <p>This introduces a bias in the gradient: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13667">
- -\sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  (-b(x,z))
+<script type="math/tex; mode=display" id="MathJax-Element-14773">
+ b(x,z) \frac{\partial z}{\partial \theta}
 </script></p>
 
-<p>We can correct the bias by adding the following into the update: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13668">\begin{align*}
-     & - \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T b(x,z)
-\end{align*}</script></p>
+<p>We can correct the bias by adding this term directly into the update, but it wouldn’t work because that will cancel out the baseline. So, instead of adding the correction term in a single step, we add it over multiple steps, in the form of a momentum term. We maintain an adaptive estimate of <script type="math/tex" id="MathJax-Element-14774">\omega = b(x,z) \frac{\partial z}{\partial \theta}</script> using an exponential moving average of samples from the minibatches, and then add this momentum term into the update.</p>
 
-<p>We maintain an adaptive estimate of <script type="math/tex" id="MathJax-Element-13669">\omega = \sum_{x,z} Q(x,z) (\frac{\partial z}{\partial \theta})^T  b(x,z)</script> using an exponential moving average of samples from the minibatches.</p>
-
-<p>Note that in practice, we optimize with <script type="math/tex" id="MathJax-Element-13670">M</script> minibatches, each with <script type="math/tex" id="MathJax-Element-13671">N</script> samples, so the update (without learning rate) is: <br>
-<script type="math/tex; mode=display" id="MathJax-Element-13672">\begin{align*}
-     & \sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m}  \sum_z Q(z|x) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x, z)) \right] 
+<p>Note that in practice, we optimize with <script type="math/tex" id="MathJax-Element-14775">M</script> minibatches, each with <script type="math/tex" id="MathJax-Element-14776">N</script> samples, so the update (without learning rate) is: <br>
+<script type="math/tex; mode=display" id="MathJax-Element-14777">\begin{align*}
+     & \sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m}  \mathbf{E}_{z\sim Q(z|x)} (\nabla_z logP(x, z) - b(x, z))\frac{\partial z}{\partial \theta} \right] 
         +\frac{MN}{N}\omega
-\\=&\sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m} \sum_z Q(z|x) (\frac{\partial z}{\partial \theta})^T ((\nabla_z logP(x, z))^T - b(x,z)) 
+\\=&\sum_{m=1}^M \left[ \frac{1}{N}\sum_{x \in m} \mathbf{E}_{z\sim Q(z|x)}  (\nabla_z logP(x, z) - b(x,z))\frac{\partial z}{\partial \theta} 
         + \omega \right] 
 \end{align*}</script></p>
 
+<p>This method has some similarity with SVRG [5] in the sense that, just like SVRG [5], we subtract a predicted gradient, then add back its mean. But we do not use a complete copy of the original network to predict gradient, as we only predict a small part of the overall gradient.</p>
+
+<blockquote>
+  <p>TBD: a discussion on correlated learning similar to Knowledge Distillation [6]</p>
+</blockquote>
+
 <h2 id="experimental-results">Experimental Results</h2>
 
-<p>TBD. Will patch up this section soon.</p>
+<blockquote>
+  <p>TBD. Will patch up this section soon.</p>
+</blockquote>
 
 <h2 id="conclusion">Conclusion</h2>
 
@@ -181,4 +180,6 @@ We compute the latent code <script type="math/tex" id="MathJax-Element-10575">z<
 <p>[1] Teuvo Kohonen, The Self-organizing map <br>
 [2] Andriy Mnih, et al., Neural Variational Inference and Learning in Belief Networks <br>
 [3] Eric Jang, et al., Categorical Reparameterization with Gumbel-Softmax <br>
-[4] Chris Maddison, et al., The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables</p>
+[4] Chris Maddison, et al., The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables <br>
+[5] Rie Johnson, et al., Accelerating Stochastic Gradient Descent using Predictive Variance Reduction <br>
+[6] Geoffrey Hinton, et al., Distilling the Knowledge in a Neural Network</p>
