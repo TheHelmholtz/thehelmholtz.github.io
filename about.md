@@ -28,7 +28,3 @@ See [Research Direction](/direction) for details.
 * Variance reduction for large categorical variables
 * MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
 
-## Contact
-
-Email: ![image](http://www.text2image.com/user_images/text2image_D21289_20170715_163519.png)
-
