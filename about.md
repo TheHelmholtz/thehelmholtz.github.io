@@ -1,30 +1,40 @@
 ---
 layout: page
 title: About
+footer: true
 permalink: /about/
 ---
 
-I am HOU Yunqing:
+I am Hou Yunqing. Hou is my family name.
 {% include icon-github.html username="hyqneuron" %} {% include icon-linkedin.html pagename="hou-yunqing" %}. 
 
-I write about neurally-inspired methods of machine learning in this blog. I've been a connectionist for half of my life.
-I'm still passionate about how the brain works, and its underlying statistical principles. 
+I care about 3 things:
 
-I am inexperienced and still learning. I very much appreciate people who point out my mistakes.
+- Neural nets and unsupervised learning
+- Assembly-level optimization of GPU code
+- Modular programming languages
 
-## Research direction
 
-* Approximate + exact inference
-* Discrete entity modelling
-* Attention and memory
-* Binding
+#### Neural Nets
 
-See [Research Direction](/direction) for details.
+I am kinda obssessed with unsupervised methods that preserve information. VAEs and Boltzmann machines are examples of
+such methods. These methods don't work the way we want, and I've been trying to figure out why. Some of my
+forward-looking research interests are listed [here](/direction).
 
-## Active projects
+#### GPU assembly coding
 
-* Variational Autoencoder with multimodal likelihood and posterior [Link](/blog/multimodal)
-* Symmetric Variational Autoencoder (Extended Helmholtz Machine) [Link](/blog/symmetric_vae)
-* Variance reduction for large categorical variables
-* MCMC with Langevin dynamics as a mechanism of top-down attention and memory recall
+I wrote an [assembler](http://code.google.com/p/asfermi) for NVIDIA Fermi GPUs back in 2011, while I was trying to write
+more optimized GPU code for neural nets. It's been a few years, but I'm now starting a new project that focuses on
+neural nets inference speed. I'm doing optimization at both the assembly level and the algorithmic level, with the
+objective of enabling real time object detection, semantic segmentation and depth estimation within a small power
+package.
+
+
+#### Modular programming languages
+
+The basic idea is that we have a base language, on which new language features can be added as modules. The difficult
+thing is that it's impossible to have unconstrained extensibility without breaking semantic consistency (add too many
+extensions and your language will go nuts). I've been exploring a method that puts some constraints on extensibility so
+as to trade for the ability to statically verify correctness of the extended language.
+
 

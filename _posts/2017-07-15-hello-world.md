@@ -6,6 +6,8 @@ permalink: /blog/hello_world
 comments: true
 categories: jekyll update
 ---
-This blog is about neurally-inspired methods of machine learning. I focus on the framework of free energy minimization
-(thus Helmholtz) and approximate + exact inference. New posts coming soon!
+
+This blog is mostly about neural nets and unsupervised learning. I care particularly about the modelling of complex
+structures so most of the time I'll focus on VAEs and graphical models. But I'll probably muse about other topics from
+time to time.
 

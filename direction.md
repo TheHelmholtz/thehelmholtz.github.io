@@ -1,23 +1,37 @@
 ---
 layout: page
-title: Research Direction
+title: Research Interests
+footer: true
 permalink: /direction/
 ---
 
-I am very interested in:
+## Current topics
 
-* Approximate + exact inference
-* Discrete entity modelling
-* Attention and memory
-* Binding
+#### Self-supervised Data Modelling
 
+In traditional autoencoders and variants, we map input to latent representation, then use that latent representation to
+reconstruct the input. This approach is what I call *asking a model to explain what it has already seen*. I now think
+this approach is terribly flawed, because it lacks *validation signal*. How do we know our model is not overfitting?
+
+There are two possible ways to provide validation signal *during* training: only feed the encoder with part of the input
+and ask it to predict the remaining parts, and using a discriminator to judge the quality of the generative model. I
+think these two approaches are symmetric, and can be synthesized into a single coherent probabilistic framework of
+learning.
+
+
+#### Interpretable Models
+
+Our current prescribed probabilistic models have two obvious problems: they are not hierarchical, and they contain way
+too many factors to be interpretable. I'm working on models that use a much much smaller number of factors in the latent
+representation, but each factor has a significant number of categories. There is a set of very elegant assumptions that
+underlie this kind of model, which makes them easily interpretable. But right now this model doesn't work, yet.
 
 #### Approximate + Exact Inference
 
 Neural nets are now quite good at producing *intuition*. I believe the next step is to combine this powerful intuition
-with the accuracy of exact inference methods. Right now I'm working on combining MCMC with variational methods. But it's
-only a matter of time before we'll start looking into MCTS as well.
+with the accuracy of exact inference methods. Right now I'm working on combining MCMC with variational methods.
 
+## Forward-looking topics
 
 #### Discrete Entity Modelling
 
