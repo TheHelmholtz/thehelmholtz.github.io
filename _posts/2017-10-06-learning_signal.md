@@ -1,44 +1,49 @@
 ---
 layout: post
-title:  "Learning Signal"
+title:  "Unsupervised Learning Signal"
 date:   2017-10-06 12:00:00 +0800
 permalink: /blog/learning_signal
 comments: true
 categories: jekyll update
 ---
 
-This post is about what kind of objective function unsupervised learning should use. In particular, I'll discuss what I
-call explanatory, predictive and discriminative objectives. It's a stub I hope I'll extend later.
+I think the autoencoder paradigm is flawed. This post outlines a way of categorizing unsupervised objectives, and
+explains why I think autoencoders, or the explanatory approach, might be insufficient.
 
-Let's clear the basic definitions:
+> TLDR: You shouldn't just ask a model to explain what it has already observed. Because the model can overfit, and
+> there's nothing you can do about it.
 
-- __Explanatory__: Given input, compute posterior, explain input. Examples include VAEs and BMs, and many of the more
-traditional probabilistic models
-- __Predictive__: Given parts of the input, predict other parts of the input. Examples include many of the autoregressive
-models such as NADE [1], PixelRNN [2] and WaveNet [3]. Another example is Context Encoder [4].
-- __Discriminative__: Given input, compute a single or several energy values. Examples include GANs, Context Prediction
-[5] and word embedding.
+I divide unsupervised models into 3 categories: explanatory, predictive, and discriminative. 
 
-The state of affairs is such that both predictive and discriminative methods are making very good progress. The
-explanatory approaches, however, still do not scale to bigger datasets. Why is that so?
+- __Explanatory__ models explain observation using some posterior. For example, VAEs map input to a posterior, then use
+samples from that posterior to reconstruct/explain the input. Boltzmann Machines, Topic Models, Gaussian Mixture Models
+are all examples of this type.
+- __Predictive__ models, given parts of the input, predict the remaining parts. Most of the autoregressive models, such
+as LSTM language models, NADE [1], PixelRNN [2], WaveNet [3], and Context Encoder [4], are all examples of this category.
+- __Discriminative__ models map input to some kind of semantic information, using self-supervisory signals. GAN is
+probably the most famous example in this category. Other examples include Context Prediction [5] and word embedding.
 
-To answer this question, I'd like to take a step back and ask a very different question: what's the difference between
-science and pseudo-science?
+The state of affairs is such that both predictive and discriminative methods are making very good progress. PixelRNNs
+generates pretty sharp images. WaveNet generates pretty convincing speech and music, GANs give very convincing images on
+LSUN, which is by no means a simple dataset, and Context Prediction learns features that allow very effective semantic
+image retrieval. A few things are missing here and there, but the general trend seems pretty good.
 
-Both science and pseudo-science explain what we observe. Very often, though not always, the explanations are backed up
-using some sort of model. But the real difference between science and pseudo-science is their predictive power.
-Scientific models make testable predictions, whereas pseudo-scientific models do not.
+Explanatory approaches, on the other hand, have been quite stuck after VAEs came out. Nobody has gotten it to work well
+even on moderately complex datasets such as CIFAR and LSUN. What's wrong?
 
-The point I'm making is that, it's not good enough to come up with sensible model that explains your observation. How
-would we know the model is not overfitting? Instead, we must train the model to generalize. The predictive approach
-requires exactly that, and the discriminative approaches enforce that to some extent as well.
+There might be many reasons why VAEs don't work yet, but in this post I'll focus on just one: *you shouldn't just ask a
+model to explain what it has observed*.
 
-Of course, the problem with predictive and discriminative methods is that they are total black-boxes. With the
-explanatory approach we can carefully design our models, then do inference with those models. With the predictive and
-discriminative approaches, the idea of a prior and a posterior seems less relevant, and so the structure of the model is
-assumed to be implicit.
+The difference between science and pseudo-science is that science makes testable predictions, whereas pseudo-science
+does not. Explanatory models are a bit like pseudo-science: the model might seem fairly reasonable, and even convincing
+at times, but since it never makes a prediction about anything, you can't really tell if it's wrong. If it overfits,
+there's nothing you can do about it.
 
-If only there is a way to combine them with inference using a prescribed model.
+In comparison, methods under the predictive approach and the discriminative approach have to do more than "just
+explain". The predictive approach has to predict unseen data, which naturally limits overfitting. Discriminative models
+make prediction as well, just that the prediction isn't in the same domain as the input.
+
+If prediction is indeed so important, can we incorporate prediction into explanatory models?
 
 
 References:
