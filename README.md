@@ -1,6 +1,8 @@
 # Helmholtz Blog
 
-This is our Helmholtz blog!
+Helmholtz blog!
+
+View at [helmholtz.io](http://helmholtz.io)
 
 Generated with Jekyll.
 
