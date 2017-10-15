@@ -11,6 +11,8 @@ This post is about alternative learning signals for unsupervised learning. I pro
 unsupervised learning methods, discuss why the mainstream explanatory approach is unsatisfactory, and list a few
 desirable properties that we should look for in designing unsupervised learning signals.
 
+It's a casual post meant to bring out discussion. If you find something you disagree with, put it in the comment!
+
 
 # 4 types of learning signal
 
