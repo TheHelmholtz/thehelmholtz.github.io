@@ -43,9 +43,7 @@ multimodal, where each mode may represent a separate object.
 #### Attention and Memory
 
 Inference with multimodal distributions can be tricky. I believe attention, implemented as a kind of noisy gradient
-descent (MCMC with Langevin dynamics), has the potential to handle multimodal posteriors. In addition, through the act
-of binding, attention allows very complex inference to be performed with a very limited set of computational resources
-(sequential execution).
+descent (MCMC with Langevin dynamics), has the potential to handle multimodal posteriors.
 
 Memory, on the other hand, is something we need if we want learning to be efficient. Our current models work reasonablly
 well at capturing population-level statistics. However, retaining instance-level information is an ability that is still

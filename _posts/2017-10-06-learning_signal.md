@@ -8,7 +8,7 @@ categories: jekyll update
 ---
 
 This post is about alternative learning signals for unsupervised learning. I provide a way of roughly categorizing
-unsupervised learning methods, discuss why the mainstream explanatory approach is deeply unsatisfactory, and lists a few
+unsupervised learning methods, discuss why the mainstream explanatory approach is unsatisfactory, and list a few
 desirable properties that we should look for in designing unsupervised learning signals.
 
 
@@ -23,8 +23,8 @@ are all examples of this type.
 as LSTM language models, NADE [1], PixelRNN [2], WaveNet [3], and Context Encoder [4], are all examples of this category.
 - __Discriminative__ models map input to some kind of semantic information, using domain-specific self-supervisory
 signals.  Examples include Context Prediction [5], word embedding, Triplet Siamese Network for video patches [7].
-- __GANs__ use a discriminator and a generator to directly approximate real data's marginal distribution. GANs are so
-distinct from the other methods they deserve their own category.
+- __GANs__ use a discriminator and a generator to [directly approximate real data's marginal
+distribution](/blog/wgan_energy). GANs are so distinct from the other methods they deserve their own category.
 
 
 # Explanatory approaches suck
@@ -56,15 +56,20 @@ In comparison, the other approaches have to do more than "just explain". The pre
 data, which naturally limits overfitting. Discriminative models make prediction as well, just that the prediction isn't
 in the same domain as the input.
 
-# Desirable properties
+# Outlook
 
-Ideally, we'd like to:
+Ideally, we'd like our unsupervised models to:
 
-- Explain observed data
+- Explain observed data (while sticking to some measure of simplicity)
 - Predict unobserved data
-- Enforce semantic consistency
+- Have a strong model of reality (a big vector is not good enough)
+- Enforce semantic consistency (semantically close objects should be similarly represented)
 
-TBD...
+When our models are able to explain observed data and predict unobserved data, we'd still be missing a few things.  In
+particular, we'd need something much stronger than a factorial model. The world we model consists of a set of discrete
+objects placed together in a scene. I think we might be stuck for a long time unless we figure out a way to represent
+discrete objects in an unsupervised model (factorial models won't cut it). When we can represent discrete objects, it'll
+be much easier to use temporal coherence to enforce some kind of semantic consistency.
 
 
 # References:
@@ -82,6 +87,4 @@ TBD...
 [6] Karol Gregor, Frederic Besse, Danilo Rezende, Ivo Danihelka, Daan Wiestra, _Towards Conceptual Compression_
 
 [7] Xiaolong Wang, Abhinav Gupta, _Unsupervised Learning of Visual Representation using Videos_
-
-[8] 
 
