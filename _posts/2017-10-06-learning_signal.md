@@ -11,34 +11,32 @@ This post is about alternative learning signals for unsupervised learning. I pro
 unsupervised learning methods, discuss why the mainstream explanatory approach is unsatisfactory, and list a few
 desirable properties that we should look for in designing unsupervised learning signals.
 
-It's a casual post meant to bring out discussion. If you find something you disagree with, put it in the comment!
 
+# 3 types of learning signal
 
-# 4 types of learning signal
+I divide unsupervised models into 3 categories: explanatory, predictive, and discriminative. 
 
-I divide unsupervised models into 4 categories: explanatory, predictive, discriminative, and GANs. 
-
-- __Explanatory__ models explain observation using some posterior. For example, VAEs map input to a posterior, then use
+- __Explanatory__ models explain observation using some **posterior**. For example, VAEs map input to a posterior, then use
 samples from that posterior to reconstruct/explain the input. Boltzmann Machines, Topic Models, Gaussian Mixture Models
 are all examples of this type.
-- __Predictive__ models, given parts of the input, predict the remaining parts. Most of the autoregressive models, such
-as LSTM language models, NADE [1], PixelRNN [2], WaveNet [3], and Context Encoder [4], are all examples of this category.
-- __Discriminative__ models map input to some kind of semantic information, using domain-specific self-supervisory
-signals.  Examples include Context Prediction [5], word embedding, Triplet Siamese Network for video patches [7].
-- __GANs__ use a discriminator and a generator to [directly approximate real data's marginal
-distribution](/blog/wgan_energy). GANs are so distinct from the other methods they deserve their own category.
+- __Predictive__ models provide the **likelihood** of unobserved data given observed data. Most of the autoregressive models, such
+as LSTM language models, NADE [1], PixelRNN [2], WaveNet [3], and Context Encoder [4], are examples of this category.
+- __Discriminative__ models tell real data from fake data by evaluating data's **unnormalized marginal probability**.
+They are trained using domain-specific self-supervisory signals.  Examples include GANs, word embedding, Context
+Prediction [5], and Triplet Siamese Network for video patches [7].
 
 
-# Explanatory approaches suck
+# Explanatory approach isn't enough
 
-The state of affairs is such that apart from the explanatory approaches, the other 3 approaches are all making very good
+The state of affairs is such that apart from the explanatory approaches, the other 2 approaches are all making very good
 progress. PixelRNNs generate pretty sharp images. WaveNet generates pretty convincing speech and music, Context
 Prediction learns features that allow very effective semantic image retrieval, word embedding has always worked wonder,
 and GANs give very convincing images on LSUN, which is by no means a simple dataset. A few things are still missing here
 and there, but the general trend seems pretty promising.
 
 Explanatory approaches, on the other hand, have been quite stuck after VAEs came out. Nobody has gotten it to work well
-even on moderately complex datasets such as CIFAR and LSUN (the best so far seems to be conv-DRAW [6]). What's wrong?
+even on moderately complex datasets such as CIFAR and LSUN (the best so far seems to be conv-DRAW [6], if we do not
+count GAN's derivatives such as ALI). What's wrong?
 
 There might be many reasons why VAEs don't work yet, but in this post I'll focus on just one: *you shouldn't just ask a
 model to explain what it has observed*.
@@ -55,23 +53,17 @@ to limit overfitting, which one is right? I'm bloody tired of looking for priors
 priors too.
 
 In comparison, the other approaches have to do more than "just explain". The predictive approach has to predict unseen
-data, which naturally limits overfitting. Discriminative models make prediction as well, just that the prediction isn't
-in the same domain as the input.
+data, which naturally limits overfitting. Discriminative models are also less likely to overfit, if they are trained
+using very convincing fake samples (see [here](/blob/wgan_energy) for an analogy).
 
-# Outlook
+# So what?
 
-Ideally, we'd like our unsupervised models to:
+Ideally, we'd like our unsupervised models to be explanatory, predictive, and discriminative at the same time. If our
+model cannot explain its observation, it probably doesn't really understand the data. If it cannot make good
+predictions, it probably overfits. If it cannot discriminate real samples from fake ones, it probably overfits as well.
 
-- Explain observed data (while sticking to some measure of simplicity)
-- Predict unobserved data
-- Have a strong model of reality (a big vector is not good enough)
-- Enforce semantic consistency (semantically close objects should be similarly represented)
+But how do we do that? Well, I'll leave this part open :)
 
-When our models are able to explain observed data and predict unobserved data, we'd still be missing a few things.  In
-particular, we'd need something much stronger than a factorial model. The world we model consists of a set of discrete
-objects placed together in a scene. I think we might be stuck for a long time unless we figure out a way to represent
-discrete objects in an unsupervised model (factorial models won't cut it). When we can represent discrete objects, it'll
-be much easier to use temporal coherence to enforce some kind of semantic consistency.
 
 
 # References:
