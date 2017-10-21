@@ -1,24 +1,43 @@
 ---
 layout: page
-title: Research Interests
-footer: true
-permalink: /direction/
+title: Research Interests [New]
+footer: false
+permalink: /direction2/
 ---
 
 ## Current topics
 
 Mostly I study unsupervised learning in the context of artificial neural networks. I'm trying to figure out why
-Variational Autoencoders can't scale to bigger datasets. Currently some of the immediate questions that interest me
+Variational Autoencoders can't scale to bigger datasets. Currently some of the immediate things that interest me
 include:
 
-- How to build hierarchical latent code that captures sharp outlines instead of just colour
-- How to incorporate some kind of sparse prior into the lower levels of a hierarchical latent code
-- How to incorporate some kind of object-level prior into the top levels of a hierarchical latent code
-- How to integrate predictive coding with VAEs
-- How to integrate iterative inference with VAEs
-- How to handle [model's asymmetry](/blog/symmetric_vae)
-- [Alternative signals](/blog/learning_signal) of unsupervised learning
+- Hierarchical latent code
+- Iterative inference
+- Temporal structures 
+- Scene-level structures
 
+#### Hierarchical latent code
+
+VAEs without a hierarchical latent code cannot possibly scale to complex datasets. A single top-level latent code can
+only retain very limited amount of information, making a reconstruction loss rather hopeless. It makes sense to go with
+a hierarchical latent code, but it turns out that getting a hierarchical latent code to work is not nearly as easy.
+
+Currently, most of the hierarchical conv-VAE filters I've trained (on CIFAR10) are qualitatively very
+different from supervised CNNs trained on the same dataset. In particular, supervised CNNs learn filters that are
+sensitive to *sharp object outlines*, whereas filters in hierarchical conv-VAEs tend to be more sensitive to colour
+instead of outline.
+
+#### Iterative inference
+
+TBD
+
+#### Temporal structures
+
+TBD
+
+#### Scene-level structures
+
+TBD
 
 ## Forward-looking topics
 
