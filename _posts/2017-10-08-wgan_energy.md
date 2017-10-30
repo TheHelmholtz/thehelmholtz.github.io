@@ -81,3 +81,8 @@ Strictly speaking, we don't need to sample from $$P(x)$$ in order to estimate $$
 matches the normalized $$Q'(x)$$. The generator's distribution is probably the closest we've got. One possible alternative
 might be to sample directly from normalized $$Q'(x)$$, but that''ll be a lot more expensive as it'll certainly involve
 MCMC.
+
+Another side note from this kind of reasoning is that, GANs actually aren't as adversarial as we normally would think.
+The discriminator's objective is not to defeat the generator. Rather, its objective is to approximate
+$$logP_{real}(x)$$. Also, the generator's objective is not to fool the discriminator, but to provide samples from the
+distribution defined by the discriminator. The generator is really a helper rather than an enemy.
