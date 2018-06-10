@@ -5,19 +5,14 @@ footer: true
 permalink: /direction/
 ---
 
-## Current topics
+I am no longer actively doing research, but I still enjoy thinking about how to model the world with unsupervised
+methods.
 
-Mostly I study unsupervised learning in the context of artificial neural networks. I'm trying to figure out why
-Variational Autoencoders can't scale to bigger datasets. Currently some of the immediate questions that interest me
-include:
+A few things that I think haven't entered mainstream unsupervised methods:
 
-- How to build hierarchical latent code that captures sharp outlines instead of just colour
-- How to incorporate some kind of sparse prior into the lower levels of a hierarchical latent code
-- How to incorporate some kind of object-level prior into the top levels of a hierarchical latent code
-- How to integrate predictive coding with VAEs
-- How to integrate iterative inference with VAEs
-- How to handle [model's asymmetry](/blog/symmetric_vae)
-- [Alternative signals](/blog/learning_signal) of unsupervised learning
+- Model: model that accomodates an unlimited set of object entities (or event episodes)
+- Inference: iterative and active inference
+- Learning: symmetric learning (e.g. [this](/blog/symmetric_vae))
 
 
 ## Forward-looking topics
