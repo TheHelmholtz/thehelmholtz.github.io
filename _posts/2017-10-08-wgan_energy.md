@@ -51,16 +51,17 @@ $$
 \begin{align*}
   &\sum_x Q(x) log\frac{1}{ \frac{1}{Z}Q'(x) } \\
 =& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + logZ \\
-=& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + log\mathbf{E}_{x\sim P} \frac{Q'(x)}{P(x)} \\
-=& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} - log\mathbf{E}_{x\sim P} \frac{P(x)}{Q'(x)} 
-        && \text{invert $P$ and $Q'$ in fraction}\\
-\le & \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} - \mathbf{E}_{x\sim P} log\frac{P(x)}{Q'(x)} 
+=& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + log\mathbf{E}_{x\sim P}    \frac{Q'(x)}{P(x)} \\
+\ge & \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + \mathbf{E}_{x\sim P} log\frac{Q'(x)}{P(x)} 
         && \text{Jensen's inequality}
+=& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} -    \mathbf{E}_{x\sim P} log\frac{P(x)}{Q'(x)} 
+        && \text{invert $P$ and $Q'$ in fraction}\\
 \end{align*}
 $$
 
-We minimize this cross-entropy w.r.t. the parameters of $$Q'(x)$$. Since $$P(x)$$ is irrelevant as long as gradient w.r.t.
-$$Q'(x)$$'s parameters is concerned, we can drop $$P(x)$$ from the objective without changing the gradient, giving:
+We minimize this lower bound of cross-entropy w.r.t. the parameters of $$Q'(x)$$. Since $$P(x)$$ is less relevant as long
+as gradient w.r.t.  $$Q'(x)$$'s parameters is concerned, we could drop $$P(x)$$ from the objective without changing the
+gradient, giving:
 
 $$
 \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} - \mathbf{E}_{x\sim P} log\frac{1}{Q'(x)} 
