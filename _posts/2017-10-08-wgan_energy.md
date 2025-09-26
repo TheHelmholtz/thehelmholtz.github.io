@@ -53,7 +53,7 @@ $$
 =& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + logZ \\
 =& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + log\mathbf{E}_{x\sim P}    \frac{Q'(x)}{P(x)} \\
 \ge & \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} + \mathbf{E}_{x\sim P} log\frac{Q'(x)}{P(x)} 
-        && \text{Jensen's inequality}
+        && \text{Jensen's inequality} \\
 =& \mathbf{E}_{x\sim Q}log\frac{1}{Q'(x)} -    \mathbf{E}_{x\sim P} log\frac{P(x)}{Q'(x)} 
         && \text{invert $P$ and $Q'$ in fraction}\\
 \end{align*}
